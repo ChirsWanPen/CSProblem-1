@@ -65,6 +65,7 @@ public class Win extends JFrame implements Action{
 		t.prefix(t.rt, t.prefixStr);
 		t.infix(t.rt, t.infixStr);
 		t.suffix(t.rt, t.suffixStr);
+		t.calcAnswer();
 	}
 	public void getAnswer(String way){
 		if(way.equals("prefix")){

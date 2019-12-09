@@ -72,6 +72,10 @@ public class BinaryTree{
     public void buildTree(){
 
     }
+    //根据后缀表达式求值
+    public void calcAnswer(){
+        
+    }
     //求前缀表达式
     public void prefix(node rt, String s){
         if(rt.flag == 1){
