@@ -28,7 +28,7 @@ public class BinaryTree{
     //中缀式转后缀式
     public void insuffixConvertToSuffix(){
         String ans = "";
-        int len = source.length();System.out.println(source);
+        int len = source.length();
         char st[] = new char[1000]; int top = 0;
         for(int i = 0; i < len; i++){
         	if(source.charAt(i) == '('){
