@@ -1,21 +1,23 @@
 package CSproblem.work;
 
 class node{
-    public int flag = 0;    //标记是否有值
+    //public int flag = 0;    //标记是否有值
     public double w = 0;
     public char ch = '@';
-    node(){}
-    node Lson;
-    node Rson;
+    node Lson = null;
+    node Rson = null;
+    node(){w = 0; ch = '@'; }
+    node(double b, char c){w = b; ch = c; }
 }
 
 public class BinaryTree{
-    node rt;
+    node rt; int cnt = 0;
     String source = "";    //源字符串
     double ansNum = 0;    //求值结果
     String prefixStr = "";    //前缀表达式
     String infixStr = "";    //中缀表达式
     String suffixStr = "";    //后缀表达式
+    String expAnswer[] = new String[100];    //表达式结果数组，用来暂存
     String opt = "+-*/()";    //操作符数组
     String cmpr[]={    //操作符比较数组
         ">><<<>",
@@ -28,7 +30,7 @@ public class BinaryTree{
     //中缀式转后缀式
     public void insuffixConvertToSuffix(){
         String ans = "";
-        int len = source.length();System.out.println(source);
+        int len = source.length();
         char st[] = new char[1000]; int top = 0;
         for(int i = 0; i < len; i++){
         	if(source.charAt(i) == '('){
@@ -70,48 +72,86 @@ public class BinaryTree{
     }
     //根据后缀表达式建立二叉树
     public void buildTree(){
-
+    	node st[] = new node[1000]; int top = 0;
+    	for(int i = 0; i < 1000; i++) st[i] = new node();
+    	int oldSpace = 0;
+    	int nowIdx = 0;
+    	while(nowIdx < suffixStr.length()){
+    		for(; nowIdx < suffixStr.length() && suffixStr.charAt(nowIdx) != ' '; nowIdx++);
+        	String str = suffixStr.substring(oldSpace, nowIdx);
+    		if(isOpt(str.charAt(0))){
+    			node tmp = new node(0, str.charAt(0));
+    			tmp.Rson = st[--top];
+    			tmp.Lson = st[--top];
+    			st[top++] = tmp;
+    		}
+    		else{
+    			double temp = Double.valueOf(str);
+    			st[top++] = new node(temp, (char)'@');
+    		}
+    		oldSpace = nowIdx + 1;
+        	nowIdx++;
+    	}
+    	rt = st[0];
+    	suffixStr = "";
     }
     //根据后缀表达式求值
     public void calcAnswer(){
-        
+        double st[] = new double[1000]; int top = 0;
+        int oldSpace = 0;
+        int nowIdx = 0;
+        while(nowIdx < suffixStr.length()){
+        	for(; nowIdx < suffixStr.length() && suffixStr.charAt(nowIdx) != ' '; nowIdx++);
+        	String str = suffixStr.substring(oldSpace, nowIdx);
+        	if(isOpt(str.charAt(0))){
+        		double a = st[--top];
+        		double b = st[--top];
+        		st[top++] = calc(a, str.charAt(0), b);
+        	}
+        	else{
+        		st[top++] = Double.valueOf(str);
+        	}
+        	oldSpace = nowIdx + 1;
+        	nowIdx++;
+        }
+        ansNum = st[0];
     }
     //求前缀表达式
-    public void prefix(node rt, String s){
-        if(rt.flag == 1){
+    public void prefix(node rt, String s[]){
+        if(rt != null){
             if(rt.ch == '@'){
-                s = s+(rt.w+"");
+            	s[cnt++] = rt.w+"";
             }
             else{
-                s = s+rt.ch;
+                s[cnt++] = rt.ch+"";
             }
             prefix(rt.Lson, s);
             prefix(rt.Rson, s);
         }
     }
     //求中缀表达式
-    public void infix(node rt, String s){
-        if(rt.flag == 1){
+    public void infix(node rt, String s[]){
+    	if(rt != null){
             infix(rt.Lson, s);
             if(rt.ch == '@'){
-                s = s+(rt.w+"");
+            	s[cnt++] = rt.w+"";
             }
             else{
-                s = s+rt.ch;
+                s[cnt++] = rt.ch+"";
             }
             infix(rt.Rson, s);
         }
     }
     //求后缀表达式
-    public void suffix(node rt, String s){
-        if(rt.flag == 1){
+    public void suffix(node rt, String s[]){
+    	if(rt != null){
             suffix(rt.Lson, s);
             suffix(rt.Rson, s);
             if(rt.ch == '@'){
-                s = s+(rt.w+"");
+            	s[cnt++] = rt.w+"";
             }
             else{
-                s = s+rt.ch;
+                s[cnt++] = rt.ch+"";
             }
         }
     }
