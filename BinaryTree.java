@@ -67,6 +67,8 @@ public class BinaryTree{
         	ans += " ";
         }
         suffixStr = ans;
+        prefixStr = ans;
+        infixStr = ans;
     }
     //根据后缀表达式建立二叉树
     public void buildTree(){
@@ -74,7 +76,24 @@ public class BinaryTree{
     }
     //根据后缀表达式求值
     public void calcAnswer(){
-        
+        double st[] = new double[1000]; int top = 0;
+        int oldSpace = 0;
+        int nowIdx = 0;
+        while(nowIdx < suffixStr.length()){
+        	for(;nowIdx < suffixStr.length() && suffixStr.charAt(nowIdx) != ' '; nowIdx++);
+        	String str = suffixStr.substring(oldSpace, nowIdx);
+        	if(isOpt(str.charAt(0))){
+        		double a = st[--top];
+        		double b = st[--top];
+        		st[top++] = calc(a, str.charAt(0), b);
+        	}
+        	else{
+        		st[top++] = Double.valueOf(str);
+        	}
+        	oldSpace = nowIdx + 1;
+        	nowIdx++;
+        }
+        ansNum = st[0];
     }
     //求前缀表达式
     public void prefix(node rt, String s){
