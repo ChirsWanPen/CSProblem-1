@@ -8,7 +8,7 @@ public class Win extends JFrame implements Action{
 	JTextField in, out1, out2;
 	JLabel exp, expRes, calRes;
 	JButton yes, clr, prefix, infix, suffix;
-	String read = "", ans1 = ""; double ans2 = 0;
+	String read = "", ans1 = "", ans2 = "";
 	//构造函数以及窗口初始化
 	public Win(){
 		//初始化
@@ -62,23 +62,32 @@ public class Win extends JFrame implements Action{
 		t.source = read;
 		t.insuffixConvertToSuffix();
 		t.buildTree();
-		t.prefix(t.rt, t.prefixStr);
-		t.infix(t.rt, t.infixStr);
-		t.suffix(t.rt, t.suffixStr);
+		t.cnt = 0; t.prefix(t.rt, t.expAnswer);
+		for(int i = 0; i < t.cnt; i++) t.prefixStr += t.expAnswer[i]+" ";
+		t.cnt = 0; t.infix(t.rt, t.expAnswer);
+		for(int i = 0; i < t.cnt; i++) t.infixStr += t.expAnswer[i]+" ";
+		t.cnt = 0; t.suffix(t.rt, t.expAnswer);
+		for(int i = 0; i < t.cnt; i++) t.suffixStr += t.expAnswer[i]+" ";
 		t.calcAnswer();
 	}
 	public void getAnswer(String way){
 		if(way.equals("prefix")){
 			ans1 = t.prefixStr;
-			ans2 = t.ansNum;
 		}
 		else if(way.equals("infix")){
 			ans1 = t.infixStr;
-			ans2 = t.ansNum;
 		}
 		else if(way.equals("suffix")){
 			ans1 = t.suffixStr;
-			ans2 = t.ansNum;
+		}
+		if(t.ansNum == 0){
+			ans2 = "0.0";
+		}
+		else if(t.ansNum > 0){
+			ans2 = t.ansNum + "";
+		}
+		else{
+			ans2 = "-" + t.ansNum + "";
 		}
 	}
 	//添加按钮的监听事件
@@ -109,7 +118,7 @@ public class Win extends JFrame implements Action{
 			else{
 				getAnswer("prefix");
 				out1.setText(ans1);
-				out2.setText(ans2+"");
+				out2.setText(ans2);
 			}
 		}
 		if(e.getActionCommand()=="中缀式"){
@@ -123,7 +132,7 @@ public class Win extends JFrame implements Action{
 			else{
 				getAnswer("infix");
 				out1.setText(ans1);
-				out2.setText(ans2+"");
+				out2.setText(ans2);
 			}
 		}
 		if(e.getActionCommand()=="后缀式"){
@@ -137,7 +146,7 @@ public class Win extends JFrame implements Action{
 			else{
 				getAnswer("suffix");
 				out1.setText(ans1);
-				out2.setText(ans2+"");
+				out2.setText(ans2);
 			}
 		}
 	}
